@@ -8,16 +8,16 @@ export default async function ProfilePage() {
 	const supabase = createServerComponentClient({ cookies });
 
 	const {
-		data: { user },
-	} = await supabase.auth.getUser();
+		data: { session },
+	} = await supabase.auth.getSession();
 
-	if (!user) {
+	if (!session) {
 		redirect("/prihlasit");
 	}
 
 	return (
 		<main>
-			<pre>{JSON.stringify(user, null, 2)}</pre>
+			<pre>{JSON.stringify(session, null, 2)}</pre>
 		</main>
 	);
 }
