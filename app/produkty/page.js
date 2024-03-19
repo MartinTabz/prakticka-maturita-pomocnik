@@ -4,6 +4,8 @@ import Link from "next/link";
 import initStripe from "stripe";
 import PurchaseButton from "@components/purchase-button";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProductPage() {
 	const supabase = createServerComponentClient({ cookies });
 	const stripe = initStripe(process.env.STRIPE_SECRET_KEY);
