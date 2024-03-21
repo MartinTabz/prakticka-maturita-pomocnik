@@ -1,10 +1,9 @@
 import initStripe from "stripe";
+import { getServiceSupabase } from "@utils/supabase";
 
 export const dynamic = "force-dynamic";
 
-const relevantEvents = new Set([
-	"checkout.session.completed",
-]);
+const relevantEvents = new Set(["checkout.session.completed"]);
 
 export async function POST(req) {
 	const stripe = initStripe(process.env.STRIPE_SECRET_KEY);
@@ -25,11 +24,51 @@ export async function POST(req) {
 	}
 
 	if (relevantEvents.has(event.type)) {
+		const supabase = getServiceSupabase();
+
 		try {
 			switch (event.type) {
 				case "checkout.session.completed":
-					const customer = event.data.object.customer;
-               console.log(event);
+					const lineItems = await stripe.checkout.sessions.listLineItems(
+						event.data.object.id
+					);
+					const { data: product } = await supabase
+						.from("product")
+						.select("id")
+						.eq("stripe_product", lineItems.data[0].price.product)
+						.single();
+
+					const { data: profile } = await supabase
+						.from("profile")
+						.select("id")
+						.eq("stripe_customer", event.data.object.customer)
+						.single();
+
+					const orderExists = await supabase
+						.from("order")
+						.select("active")
+						.eq("profile_id", profile.id)
+						.eq("product_id", product.id)
+						.single();
+
+					if (orderExists?.data != null && orderExists?.data?.active == false) {
+						await supabase
+							.from("order")
+							.update({ active: true })
+							.eq("profile_id", profile.id)
+							.eq("product_id", product.id);
+					} else if (orderExists?.data == null) {
+						await supabase
+							.from("order")
+							.insert([
+								{
+									product_id: product.id,
+									profile_id: profile.id,
+									active: true,
+								},
+							])
+							.select();
+					}
 
 					break;
 				default:
@@ -51,4 +90,3 @@ export async function POST(req) {
 	}
 	return new Response(JSON.stringify({ received: true }));
 }
-
