@@ -88,5 +88,6 @@ export async function POST(req) {
 			status: 400,
 		});
 	}
+   
 	return new Response(JSON.stringify({ received: true }));
 }
