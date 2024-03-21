@@ -36,8 +36,6 @@ export default async function ProduktLayout({ children, params: { slug } }) {
 
 	return (
 		<main>
-			<h1>{product.name}</h1>
-			<p>{product.description}</p>
 			<section>{children}</section>
 		</main>
 	);
