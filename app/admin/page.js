@@ -1,7 +1,8 @@
 import { getServiceSupabase } from "@utils/supabase";
 import ProductDropdownComponent from "@components/admin/product-dropdown";
-import Link from "next/link";
 import NewDropdownComponent from "@components/admin/new-dropdown";
+
+export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
 	const supabase = getServiceSupabase();
