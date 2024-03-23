@@ -85,8 +85,6 @@ export async function POST(req) {
 		])
 		.select();
 
-	console.log(insertNew);
-
 	if (insertNew.error == null) {
 		return sendResponse(true, null, 200);
 	} else {
