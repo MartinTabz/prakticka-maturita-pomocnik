@@ -105,6 +105,9 @@
 
 	--main-font: "OpenSans", sans-serif;
 	--sec-font: "Lora", serif;
+
+	--clr-main: rgb(34, 67, 212);
+	--clr-main-light: rgb(77, 146, 232);
 }
 * {
 	padding: 0;

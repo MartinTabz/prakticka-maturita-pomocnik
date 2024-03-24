@@ -21,7 +21,7 @@ export default function LoginButton() {
 			});
 		} catch (error) {
 			console.log(error.message);
-		}
+		}	
 	};
 
 	return (

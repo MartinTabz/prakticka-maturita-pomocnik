@@ -1,16 +1,12 @@
 import Link from "next/link";
 import { FaCircleCheck } from "react-icons/fa6";
+import style from "@styles/index.module.css";
+import Navigation from "@components/navigation";
 
 export default function IndexPage() {
 	return (
 		<>
-			<header>
-				<div>Maturita</div>
-				<nav>
-					<Link href={"/produkty"}>Produkty</Link>
-					<Link href={"/prihlasit"}>Přihlásit se</Link>
-				</nav>
-			</header>
+			<Navigation isLightTheme={true} />
 			<main>
 				<section>
 					<div>
