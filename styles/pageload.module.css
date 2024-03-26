@@ -1,0 +1,85 @@
+.area {
+	background-color: transparent;
+	width: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 100dvh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.spinner {
+	color: var(--clr-main);
+	font-size: 3rem;
+}
+.inner {
+	display: flex;
+	text-align: center;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+}
+.inner h1 {
+	font-size: 4rem;
+	font-family: var(--sec-font);
+}
+.inner span {
+	font-size: 1.4rem;
+	color: gray;
+	font-weight: 400;
+}
+.home_btn:hover {
+	background-color: var(--clr-main-light);
+}
+.home_btn {
+	background-color: var(--clr-main);
+	color: white;
+	transition: var(--ef-trans);
+	font-weight: 600;
+	margin-top: 15px;
+	text-decoration: none;
+	padding: 10px 20px;
+	border-radius: 10px;
+	width: fit-content;
+	font-size: 1.1rem;
+}
+.cta {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	margin-top: 10px;
+}
+.cta a,
+.cta button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 150px;
+	font-weight: 600;
+	transition: var(--ef-trans);
+	height: 45px;
+	border-radius: 10px;
+	font-size: 1.1rem;
+}
+.cta button {
+	background-color: var(--clr-main);
+	color: white;
+	cursor: pointer;
+	border: 2px solid var(--clr-main);
+}
+.cta button:hover {
+	background-color: var(--clr-main-light);
+	border: 2px solid var(--clr-main-light);
+}
+.cta a {
+	background-color: transparent;
+	text-decoration: none;
+	color: black;
+	border: 2px solid black;
+}
+.cta a:hover {
+	background-color: rgb(198, 198, 198);
+}
