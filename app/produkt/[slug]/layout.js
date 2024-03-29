@@ -34,9 +34,5 @@ export default async function ProduktLayout({ children, params: { slug } }) {
 		redirect("/produkty");
 	}
 
-	return (
-		<main>
-			<section>{children}</section>
-		</main>
-	);
+	return <main>{children}</main>;
 }

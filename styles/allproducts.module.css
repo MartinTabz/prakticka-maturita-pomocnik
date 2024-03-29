@@ -42,6 +42,17 @@
 	width: 100%;
 	height: 200px;
 	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: grey;
+	border-radius: 20px 20px 0 0;
+}
+.product_image span {
+	font-size: 3rem;
+	color: white;
+	font-family: var(--sec-font);
+	font-weight: 800;
 }
 .product_image img {
 	position: absolute;

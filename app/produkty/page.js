@@ -77,12 +77,16 @@ export default async function ProductPage() {
 							products.map((product) => (
 								<div className={style.product} key={product.id}>
 									<div className={style.product_image}>
-										<Image
-											src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/subjects/${product.image}`}
-											alt="Ilustrační obrázek k produktu"
-											width={600}
-											height={200}
-										/>
+										{product.image ? (
+											<Image
+												src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/subjects/${product.image}`}
+												alt="Ilustrační obrázek k produktu"
+												width={600}
+												height={200}
+											/>
+										) : (
+											<span>?</span>
+										)}
 									</div>
 									<div className={style.product_desc}>
 										<div className={style.product_text}>
