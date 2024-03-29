@@ -1,0 +1,76 @@
+.area {
+	width: 100%;
+	height: 100dvh;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	min-height: 500px;
+}
+.area span {
+	font-size: 1.2rem;
+	margin-bottom: 10px;
+	color: grey;
+	font-weight: 600;
+	padding: 0 5%;
+	text-transform: uppercase;
+}
+.area h1 {
+	font-family: var(--sec-font);
+	font-size: 4rem;
+	font-weight: 800;
+	padding: 0 5%;
+	line-height: 4.2rem;
+	margin-bottom: 20px;
+}
+.area p {
+	font-size: 1.3rem;
+	width: 95%;
+	max-width: 700px;
+	margin-bottom: 50px;
+}
+.area a {
+	background-color: var(--clr-main);
+	color: white;
+	font-weight: 700;
+	padding: 10px 35px;
+	text-decoration: none;
+	border-radius: 15px;
+	font-size: 1.3rem;
+}
+.area svg {
+	font-size: 6rem;
+	margin-bottom: 40px;
+}
+.success {
+	color: green;
+}
+.fail {
+   color: red;
+}
+@media only screen and (max-width: 675px) {
+	.area span {
+		font-size: 0.9rem;
+	}
+	.area h1 {
+		font-family: var(--sec-font);
+		font-size: 2rem;
+		font-weight: 800;
+		padding: 0 5%;
+		line-height: 2rem;
+		margin-bottom: 20px;
+	}
+	.area p {
+		font-size: 1rem;
+	}
+	.area a {
+		padding: 15px 30px;
+		font-size: 1rem;
+	}
+	.area svg {
+		font-size: 4rem;
+		margin-bottom: 40px;
+		color: green;
+	}
+}

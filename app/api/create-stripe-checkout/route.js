@@ -73,7 +73,7 @@ export async function POST(req) {
 				},
 			],
 			mode: "payment",
-			success_url: `${process.env.NEXT_PUBLIC_DOMAIN}/objednavka/uspech`,
+			success_url: `${process.env.NEXT_PUBLIC_DOMAIN}/objednavka/uspech?s={CHECKOUT_SESSION_ID}`,
 			cancel_url: `${process.env.NEXT_PUBLIC_DOMAIN}/objednavka/zruseno`,
 			customer: userProfile.data.stripe_customer,
 		};

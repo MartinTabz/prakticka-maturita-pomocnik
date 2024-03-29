@@ -1,13 +1,16 @@
 import Link from "next/link";
+import style from "@styles/checkout.module.css";
+import { MdErrorOutline } from "react-icons/md";
 
 export default function OrderFailedPage() {
 	return (
-		<main>
+		<main className={style.area}>
+			<MdErrorOutline className={style.fail} />
 			<h1>Objednávka byla zrušena!</h1>
-			<span>
+			<p>
 				Zrušili jste nákupní proces, nebo se něco pokazilo. Zkuste to znovu,
 				nebo kontaktujte podporu
-			</span>
+			</p>
 			<Link href={"/produkty"}>Zpět na produkty</Link>
 		</main>
 	);
