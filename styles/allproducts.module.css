@@ -84,6 +84,14 @@
 	font-size: 1.25rem;
 	cursor: pointer;
 	border: none;
+	height: 55px;
+}
+.buy {
+	width: 150px;
+	height: 55px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 .login {
 	background-color: rgb(184, 120, 0);

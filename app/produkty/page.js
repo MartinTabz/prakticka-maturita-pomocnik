@@ -92,12 +92,19 @@ export default async function ProductPage() {
 										<div className={style.bottom}>
 											{session ? (
 												product.owned ? (
-													<Link className={style.open} href={`/produkt/${product.slug}`}>Otevřít</Link>
+													<Link
+														className={style.open}
+														href={`/produkt/${product.slug}`}
+													>
+														Otevřít
+													</Link>
 												) : (
 													<PurchaseButton price={product.stripe_price} />
 												)
 											) : (
-												<Link className={style.login} href={"/prihlasit"}>Přihlásit se</Link>
+												<Link className={style.login} href={"/prihlasit"}>
+													Přihlásit se
+												</Link>
 											)}
 											<span>{product.unit_amount / 100} Kč</span>
 										</div>
