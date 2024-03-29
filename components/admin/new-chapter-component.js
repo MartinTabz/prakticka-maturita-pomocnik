@@ -10,10 +10,17 @@ import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import TextStyle from "@tiptap/extension-text-style";
-import { EditorContent, useEditor } from "@tiptap/react";
+import { EditorContent, useEditor, ReactNodeViewRenderer } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import ListItem from "@tiptap/extension-list-item";
+import csharp from "highlight.js/lib/languages/csharp";
+import js from "highlight.js/lib/languages/javascript";
+import bash from "highlight.js/lib/languages/bash";
+import html from "highlight.js/lib/languages/xml";
+import { createLowlight } from "lowlight";
+import CodeBlockComponent from "@components/code-block-component";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { Color } from "@tiptap/extension-color";
 import { HexColorPicker } from "react-colorful";
 import {
@@ -26,6 +33,12 @@ import {
 	LuListOrdered,
 	LuList,
 } from "react-icons/lu";
+
+const lowlight = createLowlight();
+lowlight.register("html", html);
+lowlight.register("csharp", csharp);
+lowlight.register("bash", bash);
+lowlight.register("js", js);
 
 export default function NewChapterComponent({ products }) {
 	const [isLoading, setIsLoading] = useState(false);
@@ -84,6 +97,11 @@ export default function NewChapterComponent({ products }) {
 					keepAttributes: false,
 				},
 			}),
+			CodeBlockLowlight.extend({
+				addNodeView() {
+					return ReactNodeViewRenderer(CodeBlockComponent);
+				},
+			}).configure({ lowlight }),
 		],
 	});
 
@@ -286,6 +304,12 @@ const MenuBar = ({ editor }) => {
 				className={editor.isActive("orderedList") ? style.is_active : ""}
 			>
 				<LuListOrdered />
+			</button>
+			<button
+				onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+				className={editor.isActive("codeBlock") ? "is-active" : ""}
+			>
+				code block
 			</button>
 			<input
 				type="file"
