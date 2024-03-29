@@ -1,6 +1,7 @@
 "use client";
 
 import axios from "axios";
+import style from "@styles/allproducts.module.css";
 import { useRouter } from "next/navigation";
 
 export default function PurchaseButton({ price }) {
@@ -20,5 +21,5 @@ export default function PurchaseButton({ price }) {
 			console.log(error.response.data);
 		}
 	};
-	return <button onClick={handlePurchase}>Koupit</button>;
+	return <button className={style.buy} onClick={handlePurchase}>Koupit</button>;
 }

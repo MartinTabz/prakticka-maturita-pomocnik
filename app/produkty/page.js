@@ -4,6 +4,8 @@ import Link from "next/link";
 import initStripe from "stripe";
 import PurchaseButton from "@components/purchase-button";
 import Navigation from "@components/navigation";
+import style from "@styles/allproducts.module.css";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
@@ -56,6 +58,7 @@ export default async function ProductPage() {
 			unit_amount,
 			owned,
 			slug: product.slug,
+			image: product.image,
 		};
 	};
 
@@ -66,29 +69,45 @@ export default async function ProductPage() {
 	return (
 		<>
 			<Navigation isLightTheme={true} />
-			<main>
-				<h1>Produkty</h1>
-				<div>
-					{products ? (
-						products.map((product) => (
-							<div key={product.id}>
-								<h2>{product.name}</h2>
-								<p>{product.description}</p>
-								<span>{product.unit_amount / 100} Kč</span>
-								{session ? (
-									product.owned ? (
-										<Link href={`/produkt/${product.slug}`}>Otevřít</Link>
-									) : (
-										<PurchaseButton price={product.stripe_price} />
-									)
-								) : (
-									<Link href={"/prihlasit"}>Přihlásit se</Link>
-								)}
-							</div>
-						))
-					) : (
-						<span>Zatím se zde nenachází žádné produkty.</span>
-					)}
+			<main className={style.main}>
+				<div className={style.area}>
+					<h1>Produkty</h1>
+					<div className={style.products_area}>
+						{products ? (
+							products.map((product) => (
+								<div className={style.product} key={product.id}>
+									<div className={style.product_image}>
+										<Image
+											src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/subjects/${product.image}`}
+											alt="Ilustrační obrázek k produktu"
+											width={600}
+											height={200}
+										/>
+									</div>
+									<div className={style.product_desc}>
+										<div className={style.product_text}>
+											<h2>{product.name}</h2>
+											<p>{product.description}</p>
+										</div>
+										<div className={style.bottom}>
+											{session ? (
+												product.owned ? (
+													<Link className={style.open} href={`/produkt/${product.slug}`}>Otevřít</Link>
+												) : (
+													<PurchaseButton price={product.stripe_price} />
+												)
+											) : (
+												<Link className={style.login} href={"/prihlasit"}>Přihlásit se</Link>
+											)}
+											<span>{product.unit_amount / 100} Kč</span>
+										</div>
+									</div>
+								</div>
+							))
+						) : (
+							<span>Zatím se zde nenachází žádné produkty.</span>
+						)}
+					</div>
 				</div>
 			</main>
 		</>
