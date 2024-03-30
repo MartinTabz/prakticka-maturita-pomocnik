@@ -56,11 +56,17 @@ export default function SubjectComponent({ chapters, product, subject }) {
 								<p>{activeChapter.description}</p>
 							</div>
 							<hr className={style.cara} />
-							<div className={style.content}>
+							<div
+								
+								className={style.content}
+							>
 								{isLoading ? (
 									<span>Načítá se</span>
 								) : (
-									<HtmlContent key={activeChapter.id} html={activeChapter.html} />
+									<HtmlContent
+										key={activeChapter.id}
+										html={activeChapter.html}
+									/>
 								)}
 							</div>
 						</div>

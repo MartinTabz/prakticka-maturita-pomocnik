@@ -1,5 +1,6 @@
 import "@styles/globals.css";
 import NotificationProvider from "@utils/notificationcontext";
+import DisableCopying from "@utils/disablecopying";
 
 export const metadata = {
 	title: "Create Next App",
@@ -10,7 +11,9 @@ export default function RootLayout({ children }) {
 	return (
 		<html lang="cs">
 			<body>
-				<NotificationProvider>{children}</NotificationProvider>
+				<NotificationProvider>
+					<DisableCopying>{children}</DisableCopying>
+				</NotificationProvider>
 			</body>
 		</html>
 	);
