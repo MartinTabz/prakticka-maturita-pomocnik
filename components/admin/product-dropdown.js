@@ -52,7 +52,7 @@ export default function ProductDropdownComponent({ products }) {
 												</div>
 											))}
 											<Link
-												href={`/nova-kapitola?p=${subject.id}`}
+												href={`/admin/nova-kapitola?p=${subject.id}`}
 												className={style.add}
 											>
 												Přidat novou kapitolu

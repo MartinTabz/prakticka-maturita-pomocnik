@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { FiLoader } from "react-icons/fi";
 import axios from "axios";
 import style from "@styles/upload.module.css";
 import crypto from "crypto";
@@ -14,6 +15,7 @@ import { EditorContent, useEditor, ReactNodeViewRenderer } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import ListItem from "@tiptap/extension-list-item";
+import { useRouter } from "next/navigation";
 import csharp from "highlight.js/lib/languages/csharp";
 import js from "highlight.js/lib/languages/javascript";
 import bash from "highlight.js/lib/languages/bash";
@@ -23,11 +25,15 @@ import CodeBlockComponent from "@components/code-block-component";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { Color } from "@tiptap/extension-color";
 import { HexColorPicker } from "react-colorful";
+import { FaAngleDown } from "react-icons/fa6";
+import { useNotifications } from "@utils/notificationcontext";
 import {
 	LuHeading1,
+	LuCode2,
 	LuPalette,
 	LuPilcrow,
 	LuHeading2,
+	LuImage,
 	LuItalic,
 	LuBold,
 	LuListOrdered,
@@ -40,21 +46,23 @@ lowlight.register("csharp", csharp);
 lowlight.register("bash", bash);
 lowlight.register("js", js);
 
-export default function NewChapterComponent({ products }) {
+export default function NewChapterComponent({ products, selectedSubject }) {
+	const { newError, newSuccess } = useNotifications();
+	const router = useRouter();
+
 	const [isLoading, setIsLoading] = useState(false);
 	const [openedDropdown, setDropDown] = useState(false);
-	const [error, setError] = useState("");
-	const [success, setSuccess] = useState(false);
 
-	const [chosenSubject, setChosenSubject] = useState();
+	const [chosenSubject, setChosenSubject] = useState(selectedSubject);
 	const [name, setName] = useState("");
 	const [description, setDescription] = useState("");
 
+	const [html, setHtml] = useState("<p></p>");
+
 	const handleSave = async (e) => {
 		e.preventDefault();
+		setHtml(editor.getHTML());
 		setIsLoading(true);
-		setSuccess(false);
-		setError("");
 
 		try {
 			const { data } = await axios.post("/api/admin/create-new-chapter", {
@@ -64,15 +72,16 @@ export default function NewChapterComponent({ products }) {
 				html: editor.getHTML(),
 			});
 			if (data?.success) {
-				setSuccess(true);
+				newSuccess("Nová kapitola byla přidána");
+				router.push("/admin");
 			} else {
-				setError("Něco se pokazilo, zkuste to později!");
+				newError("Něco se pokazilo, zkuste to později!");
 			}
 		} catch (error) {
 			if (error?.response?.data?.error) {
-				setError(error.response.data.error);
+				newError(error.response.data.error);
 			} else {
-				setError(error.message);
+				newError(error.message);
 			}
 		}
 
@@ -103,43 +112,52 @@ export default function NewChapterComponent({ products }) {
 				},
 			}).configure({ lowlight }),
 		],
+		content: "<p></p>",
 	});
 
 	return (
-		<section>
-			<div>
-				{error && (
-					<div>
-						<b>Chyba: </b>
-						{error}
-					</div>
-				)}
-				{success && <div>Úspěch</div>}
+		<div className={style.section}>
+			<div className={style.area}>
 				<h1>Nová kapitola</h1>
-				<div>
+				<div
+					className={style.dropdown}
+					style={{
+						borderRadius: openedDropdown ? "15px 15px 0 0" : "15px",
+					}}
+				>
 					<div
 						onClick={() => {
-							setDropDown(!openedDropdown);
+							if (!isLoading) {
+								setDropDown(!openedDropdown);
+							}
 						}}
+						className={style.dropdown_block}
 					>
-						{products.length > 0
-							? chosenSubject
-								? chosenSubject.name
-								: "Vybrat předmět"
-							: "Nemáte zatím žádný produkt"}
+						<span>
+							{products.length > 0
+								? chosenSubject
+									? chosenSubject.name
+									: "Vybrat předmět"
+								: "Nemáte zatím žádný produkt"}
+						</span>
+						<FaAngleDown
+							style={{ transform: openedDropdown && "rotate(180deg)" }}
+						/>
 					</div>
 					{openedDropdown && (
-						<div>
+						<div className={style.dropdown_items}>
 							{products.map((product, index) => (
-								<div key={index}>
+								<div className={style.dropdown_item} key={index}>
 									<h2>{product.name}</h2>
-									<div>
+									<div className={style.dropdown_chapters}>
 										{product.subject.length > 0
 											? product.subject.map((s) => (
 													<div
 														onClick={() => {
-															setChosenSubject(s);
-															setDropDown(false);
+															if (!isLoading) {
+																setChosenSubject(s);
+																setDropDown(false);
+															}
 														}}
 														key={s.id}
 													>
@@ -153,43 +171,52 @@ export default function NewChapterComponent({ products }) {
 						</div>
 					)}
 				</div>
-				<div>
+				<div className={style.input_area}>
 					<label>Název</label>
 					<input
 						type="text"
 						value={name}
 						onChange={(e) => setName(e.target.value)}
+						disabled={isLoading}
 					/>
 				</div>
-				<div>
+				<div className={style.input_area}>
 					<label>Popis</label>
 					<textarea
 						type="text"
 						value={description}
+						disabled={isLoading}
 						onChange={(e) => setDescription(e.target.value)}
 					/>
 				</div>
-				<div>
+				<div className={style.editor}>
 					<MenuBar editor={editor} />
-					{isLoading ? <div></div> : <EditorContent editor={editor} />}
-				</div>
-				<div>
 					{isLoading ? (
-						<span>Ukládá se</span>
+						<div
+							className={style.editor_content}
+							dangerouslySetInnerHTML={{ __html: html }}
+						/>
 					) : (
-						<button onClick={handleSave}>Uložit</button>
+						<EditorContent className={style.editor_content} editor={editor} />
 					)}
 				</div>
+				<div className={style.upload}>
+					<div className={style.upload_btn}>
+						{isLoading ? (
+							<FiLoader color={"white"} className={`loader`} />
+						) : (
+							<button onClick={handleSave}>Vložit</button>
+						)}
+					</div>
+				</div>
 			</div>
-		</section>
+		</div>
 	);
 }
 
 const MenuBar = ({ editor }) => {
 	const supabase = createClientComponentClient();
-
-	const [error, setError] = useState("");
-
+	const { newError } = useNotifications();
 	const [pickedColor, setPickedColor] = useState("#eb4034");
 	const [openedColorPicker, setOpenedColorPicker] = useState(false);
 
@@ -200,14 +227,14 @@ const MenuBar = ({ editor }) => {
 	const uploadFile = async (event) => {
 		try {
 			if (!event.target.files || event.target.files.length === 0) {
-				console.log("You must select an image to upload.");
+				newError("Musíte vybrat obrázek pro nahrání");
 				return;
 			}
 
 			const file = event.target.files[0];
 
 			if (file.size > 1048576) {
-				setUploadingError("Obrázek je příliš velký (Max 1MB)");
+				newError("Obrázek je příliš velký (Max 1MB)");
 				return;
 			}
 
@@ -225,7 +252,7 @@ const MenuBar = ({ editor }) => {
 
 				if (upload_error && !upload_error.error === "Duplicate") {
 					console.log(upload_error);
-					setError(upload_error.message);
+					newError(upload_error.message);
 					return;
 				}
 
@@ -236,7 +263,7 @@ const MenuBar = ({ editor }) => {
 			} while (!path || attempts >= 10);
 
 			if (attempts >= 10) {
-				setError("Něco se pokazilo při nahrávání obrázku");
+				newError("Něco se pokazilo při nahrávání obrázku");
 				return;
 			}
 
@@ -250,7 +277,7 @@ const MenuBar = ({ editor }) => {
 					.run();
 			}
 		} catch (error) {
-			setError(error.message);
+			newError(error.message);
 			return;
 		}
 	};
@@ -309,14 +336,17 @@ const MenuBar = ({ editor }) => {
 				onClick={() => editor.chain().focus().toggleCodeBlock().run()}
 				className={editor.isActive("codeBlock") ? "is-active" : ""}
 			>
-				code block
+				<LuCode2 />
 			</button>
-			<input
-				type="file"
-				accept="image/*"
-				multiple={false}
-				onChange={uploadFile}
-			/>
+			<div>
+				<LuImage />
+				<input
+					type="file"
+					accept="image/*"
+					multiple={false}
+					onChange={uploadFile}
+				/>
+			</div>
 			<button
 				onClick={() => editor.chain().focus().setColor(pickedColor).run()}
 				className={
@@ -341,7 +371,6 @@ const MenuBar = ({ editor }) => {
 			>
 				<LuPalette />
 			</button>
-			{error && <div>{error}</div>}
 		</div>
 	);
 };

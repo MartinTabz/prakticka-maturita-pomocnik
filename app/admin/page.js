@@ -16,17 +16,14 @@ export default async function AdminPage() {
 		);
 
 	return (
-		<>
-			<Navigation isLightTheme={true} />
-			<main className={style.main}>
-				<div className={style.inner}>
-					<div className={style.top}>
-						<h1>Administrace</h1>
-						<NewDropdownComponent />
-					</div>
-					<ProductDropdownComponent products={productDetails} />
+		<div className={style.main}>
+			<div className={style.inner}>
+				<div className={style.top}>
+					<h1>Administrace</h1>
+					<NewDropdownComponent />
 				</div>
-			</main>
-		</>
+				<ProductDropdownComponent products={productDetails} />
+			</div>
+		</div>
 	);
 }

@@ -1,0 +1,230 @@
+.section {
+	display: flex;
+	justify-content: center;
+	padding: 50px 0;
+}
+.area {
+	max-width: 1000px;
+	width: 95%;
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+}
+.area h1 {
+	font-size: 2.5rem;
+	font-weight: 700;
+	font-family: var(--sec-font);
+}
+.dropdown {
+	position: relative;
+	background-color: rgb(236, 236, 236);
+	border-radius: 15px;
+	border: 1px solid grey;
+	width: 100%;
+	height: 50px;
+}
+.dropdown_block svg {
+	transition: var(--ef-trans);
+}
+.dropdown_block {
+	position: absolute;
+	font-weight: 700;
+	font-size: 1.2rem;
+	left: 0;
+	cursor: pointer;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 15px;
+}
+.dropdown_item h2 {
+	padding: 5px 0;
+}
+.dropdown_items {
+	position: absolute;
+	background-color: rgb(236, 236, 236);
+	border-bottom: 1px solid grey;
+	border-left: 1px solid grey;
+	border-right: 1px solid grey;
+	z-index: 800;
+	border-radius: 0 0 15px 15px;
+	top: 49px;
+	padding: 5px 20px 20px 20px;
+	left: -1px;
+	width: calc(100% + 2px);
+	height: auto;
+}
+.dropdown_chapters {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	padding: 10px;
+	background-color: white;
+	border-radius: 10px;
+	margin-top: 5px;
+}
+.dropdown_chapters div {
+	padding: 10px;
+	transition: var(--ef-trans);
+	cursor: pointer;
+	border-radius: 10px;
+	font-weight: 500;
+}
+.dropdown_chapters div:hover {
+	background-color: var(--clr-main);
+	color: white;
+}
+.input_area {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+.input_area > label {
+	font-weight: 600;
+	font-family: var(--sec-font);
+	font-size: 1.5rem;
+}
+.input_area > input,
+.input_area > textarea {
+	padding: 15px;
+	font-family: var(--main-font);
+	font-size: 1.1rem;
+	border: 1px solid gray;
+	border-radius: 15px;
+	resize: vertical;
+}
+.input_area > textarea {
+	min-height: 100px;
+}
+.input_area > input:focus,
+.input_area > textarea:focus {
+	border: 1px solid gray;
+	outline: none;
+}
+.editor {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	padding: 10px;
+	border-radius: 15px;
+	gap: 5px;
+	border: 1px solid gray;
+}
+.editor_menu {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+.editor_menu > button,
+.editor_menu > div {
+	width: 30px;
+	transition: var(--ef-trans);
+	height: 30px;
+	font-size: 1.1rem;
+	display: flex;
+	cursor: pointer;
+	align-items: center;
+	justify-content: center;
+	background-color: rgb(236, 236, 236);
+	border: 1px solid grey;
+	position: relative;
+	color: black;
+	border-radius: 5px;
+}
+.editor_menu > button:hover,
+.editor_menu > div:hover {
+	background-color: rgb(212, 212, 212);
+}
+.editor_menu > div > input {
+	position: relative;
+	position: absolute;
+	left: 0;
+	opacity: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+.colour_block {
+	width: 24px;
+	height: 24px;
+   border-radius: 5px;
+   padding: 5px;
+}
+.color_picker {
+	position: absolute;
+	top: 35px;
+   left: -150%;
+}
+.editor_content {
+   min-height: 100px;
+   padding: 10px;
+}
+.editor_content > div {
+   min-height: 100px;
+   padding: 10px;
+   border: none;
+   outline: none;
+}
+.editor_content > div:focus {
+   border: none;
+   outline: none;
+}
+.editor_content ol, .editor_content ul {
+   padding-left: 25px;
+}
+.editor_content p {
+   padding-bottom: 5px;
+   font-size: 1.1rem;
+}
+.editor_content h1 {
+   font-size: 2.2rem;
+   font-family: var(--sec-font);
+}
+.editor_content h2 {
+   font-size: 1.8rem;
+   font-family: var(--sec-font);
+}
+.upload {
+   position: relative;
+   height: 60px;
+   width: 100%;
+   justify-content: center;
+   align-items: center;
+   display: flex;
+}
+.upload_btn {
+   background-color: var(--clr-main);
+   color: white;
+   width: 150px;
+   border-radius: 15px;
+   align-items: center;
+   justify-content: center;
+   display: flex;
+   position: relative;
+   height: 100%;
+}
+.upload_btn > button {
+   background-color: transparent;
+   position: absolute;
+   transition: var(--ef-trans);
+   cursor: pointer;
+   width: 100%;
+   height: 100%;
+   border: none;
+   border-radius: 15px;
+   font-size: 1.2rem;
+   font-weight: 600;
+   color: white;
+   left: 0;
+   top: 0;
+}
+.upload_btn > button:hover {
+   background-color: var(--clr-main-light);
+}
+.upload_btn svg {
+   font-size: 1.8rem;
+}

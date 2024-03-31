@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { redirect, notFound } from "next/navigation";
+import Navigation from "@components/navigation";
 
 export default async function AdminLayout({ children }) {
 	const supabase = createServerComponentClient({ cookies });
@@ -22,5 +23,10 @@ export default async function AdminLayout({ children }) {
 		notFound();
 	}
 
-	return <>{children}</>;
+	return (
+		<>
+			<Navigation isLightTheme={true} />
+			<main>{children}</main>
+		</>
+	);
 }

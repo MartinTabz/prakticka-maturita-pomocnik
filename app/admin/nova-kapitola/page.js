@@ -3,14 +3,29 @@ import NewChapterComponent from "@components/admin/new-chapter-component";
 
 export const dynamic = "force-dynamic";
 
-export default async function NewChapterPage() {
+export default async function NewChapterPage({ searchParams: { p } }) {
 	const supabase = getServiceSupabase();
 	const { data: products } = await supabase
 		.from("product")
 		.select(`name, subject(name, id)`);
+
+	var selectedSubject = null;
+
+	if (p) {
+		const { data: subject } = await supabase
+			.from("subject")
+			.select("name, id")
+			.eq("id", p)
+			.single();
+
+		if(subject != null) {
+			selectedSubject = subject
+		}
+	}
+
 	return (
-		<div>
-         <NewChapterComponent products={products} />
-		</div>
+		<>
+			<NewChapterComponent products={products} selectedSubject={selectedSubject} />
+		</>
 	);
 }
