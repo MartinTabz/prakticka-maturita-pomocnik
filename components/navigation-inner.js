@@ -5,7 +5,7 @@ import Link from "next/link";
 import style from "@styles/navigation.module.css";
 import { FaAngleDown } from "react-icons/fa";
 
-export default function NavigationInner({ session, isLightTheme }) {
+export default function NavigationInner({ session, isLightTheme, isAdmin }) {
 	const [menuOpened, setMenuOpened] = useState(false);
 	const [userSubMenuOpened, setUserSubMenuOpened] = useState(false);
 	return (
@@ -17,6 +17,7 @@ export default function NavigationInner({ session, isLightTheme }) {
 				<nav>
 					<Link href={"/"}>Domů</Link>
 					<Link href={"/produkty"}>Produkty</Link>
+					{isAdmin && <Link href={"/admin"}>Administrace</Link>}
 				</nav>
 				{session ? (
 					<div className={style.user_submenu}>
@@ -70,6 +71,7 @@ export default function NavigationInner({ session, isLightTheme }) {
 					<Link href={"/produkty"}>Produkty</Link>
 					{session ? (
 						<>
+							{isAdmin && <Link href={"/admin"}>Administrace</Link>}
 							<Link href={"/odhlasit"}>Odhlásit</Link>
 							<Link href={"/profil"}>
 								<img src={session.user.user_metadata.avatar_url} />

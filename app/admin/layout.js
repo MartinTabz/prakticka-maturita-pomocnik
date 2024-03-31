@@ -22,5 +22,5 @@ export default async function AdminLayout({ children }) {
 		notFound();
 	}
 
-	return <main>{children}</main>;
+	return <>{children}</>;
 }

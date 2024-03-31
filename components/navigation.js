@@ -10,5 +10,25 @@ export default async function Navigation({ isLightTheme }) {
 		data: { session },
 	} = await supabase.auth.getSession();
 
-	return <NavigationInner isLightTheme={isLightTheme} session={session} />;
+	var isAdmin = false;
+
+	if (session?.user?.id) {
+		const { data: profile } = await supabase
+			.from("profile")
+			.select("admin")
+			.eq("id", session.user.id)
+			.single();
+
+		if (profile != null) {
+			isAdmin = profile?.admin;
+		}
+	}
+
+	return (
+		<NavigationInner
+			isLightTheme={isLightTheme}
+			session={session}
+			isAdmin={isAdmin}
+		/>
+	);
 }

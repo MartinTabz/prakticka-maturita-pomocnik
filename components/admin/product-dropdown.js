@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import style from "@styles/admin.module.css";
 
 export default function ProductDropdownComponent({ products }) {
 	const [activeProduct, setActiveProduct] = useState(null);
@@ -16,7 +17,7 @@ export default function ProductDropdownComponent({ products }) {
 	};
 
 	return (
-		<div>
+		<div className={style.products_container}>
 			{products.map((product, productIndex) => (
 				<div key={productIndex}>
 					<div
@@ -26,7 +27,7 @@ export default function ProductDropdownComponent({ products }) {
 						<h2>{product.name}</h2>
 					</div>
 					{activeProduct === productIndex && (
-						<div>
+						<div className={style.subjects_container}>
 							{product.subject.map((subject, subjectIndex) => (
 								<div key={subjectIndex}>
 									<div
@@ -36,16 +37,26 @@ export default function ProductDropdownComponent({ products }) {
 										<h3>{subject.name}</h3>
 									</div>
 									{activeSubject === subjectIndex && (
-										<div>
+										<div className={style.chapter_container}>
 											{subject.chapter.map((chapter, chapterIndex) => (
-												<div key={chapterIndex}>
-													<h4>{chapter.name}</h4>
-													<p>{chapter.description}</p>
-													<Link href={`/admin/kapitola/${chapter.id}`}>
-														Upravit
-													</Link>
+												<div className={style.chapter_item} key={chapterIndex}>
+													<div>
+														<h4>{chapter.name}</h4>
+														<p>{chapter.description}</p>
+													</div>
+													<div>
+														<Link href={`/admin/kapitola/${chapter.id}`}>
+															Upravit
+														</Link>
+													</div>
 												</div>
 											))}
+											<Link
+												href={`/nova-kapitola?p=${subject.id}`}
+												className={style.add}
+											>
+												Přidat novou kapitolu
+											</Link>
 										</div>
 									)}
 								</div>
@@ -54,6 +65,7 @@ export default function ProductDropdownComponent({ products }) {
 					)}
 				</div>
 			))}
+			
 		</div>
 	);
 }
