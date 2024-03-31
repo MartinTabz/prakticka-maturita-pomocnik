@@ -51,6 +51,7 @@
 }
 .switch > button {
 	padding: 7px 15px;
+	text-align: left;
 	border-radius: 10px;
 	border: 1px solid grey;
 	cursor: pointer;
@@ -125,4 +126,50 @@
 .content ol {
 	margin-left: 25px;
 	padding: 10px 0;
+}
+@media only screen and (max-width: 900px) {
+	.back {
+		flex-direction: column;
+	}
+	.back a {
+		order: 1;
+	}
+	.back > div {
+		order: 2;
+	}
+}
+@media only screen and (max-width: 675px) {
+	.content img {
+		background-color: rgb(199, 199, 199);
+		width: 100%;
+		border-radius: 20px;
+		height: 450px;
+		object-fit: contain;
+		margin: 15px 0;
+	}
+	.content {
+		font-size: 1rem;
+	}
+	.content > div > p {
+		padding-bottom: 10px;
+	}
+	.content h1 {
+		padding-top: 20px;
+		font-size: 2.2rem;
+		font-family: var(--sec-font);
+	}
+	.content h2 {
+		padding-top: 10px;
+		font-size: 1.8rem;
+		font-family: var(--sec-font);
+	}
+	.content ul,
+	.content ol {
+		margin-left: 25px;
+		padding: 10px 0;
+	}
+	.switch > button {
+		padding: 6px 12px;
+		font-size: 0.95rem;
+	}
 }
