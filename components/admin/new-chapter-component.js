@@ -17,6 +17,7 @@ import Image from "@tiptap/extension-image";
 import ListItem from "@tiptap/extension-list-item";
 import { useRouter } from "next/navigation";
 import csharp from "highlight.js/lib/languages/csharp";
+import json from "highlight.js/lib/languages/json"
 import js from "highlight.js/lib/languages/javascript";
 import bash from "highlight.js/lib/languages/bash";
 import html from "highlight.js/lib/languages/xml";
@@ -45,6 +46,7 @@ lowlight.register("html", html);
 lowlight.register("csharp", csharp);
 lowlight.register("bash", bash);
 lowlight.register("js", js);
+lowlight.register("json", json);
 
 export default function NewChapterComponent({ products, selectedSubject }) {
 	const { newError, newSuccess } = useNotifications();

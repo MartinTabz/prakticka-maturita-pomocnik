@@ -17,12 +17,14 @@ import { createLowlight } from "lowlight";
 import CodeBlockComponent from "@components/code-block-component";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { Color } from "@tiptap/extension-color";
+import json from "highlight.js/lib/languages/json"
 
 const lowlight = createLowlight();
 lowlight.register("html", html);
 lowlight.register("csharp", csharp);
 lowlight.register("bash", bash);
 lowlight.register("js", js);
+lowlight.register("json", json);
 
 export default function HtmlContent({ html }) {
 	const editor = useEditor({
