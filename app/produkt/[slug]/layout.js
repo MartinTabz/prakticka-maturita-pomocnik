@@ -34,5 +34,15 @@ export default async function ProduktLayout({ children, params: { slug } }) {
 		redirect("/produkty");
 	}
 
+	const hasFine = await supabase
+		.from("fine")
+		.select("*")
+		.eq("profile_id", session.user.id)
+		.single();
+
+	if(hasFine?.data != null) {
+		redirect("/profil/pokuta")
+	}
+
 	return <main>{children}</main>;
 }

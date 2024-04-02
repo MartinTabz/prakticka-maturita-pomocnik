@@ -32,42 +32,66 @@ export async function POST(req) {
 					const lineItems = await stripe.checkout.sessions.listLineItems(
 						event.data.object.id
 					);
-					const { data: product } = await supabase
-						.from("product")
-						.select("id")
-						.eq("stripe_product", lineItems.data[0].price.product)
-						.single();
+					if (lineItems.data[0].price.product == "prod_PqiLnsVvC2TqmZ") {
+						const { data: fine } = await supabase
+							.from("fine")
+							.select(`*, profile_id(id, stripe_customer)`)
+							.eq("profile_id.stripe_customer", event.data.object.customer)
+							.single();
 
-					const { data: profile } = await supabase
-						.from("profile")
-						.select("id")
-						.eq("stripe_customer", event.data.object.customer)
-						.single();
+						if (fine?.id) {
+							const { error: deleteFine } = await supabase
+								.from("fine")
+								.delete()
+								.eq("id", fine.id);
 
-					const orderExists = await supabase
-						.from("order")
-						.select("active")
-						.eq("profile_id", profile.id)
-						.eq("product_id", product.id)
-						.single();
+							if (deleteFine != null) {
+								return new Response(`Unable to delete fine`, {
+									status: 400,
+								});
+							}
+						}
+					} else {
+						const { data: product } = await supabase
+							.from("product")
+							.select("id")
+							.eq("stripe_product", lineItems.data[0].price.product)
+							.single();
 
-					if (orderExists?.data != null && orderExists?.data?.active == false) {
-						await supabase
+						const { data: profile } = await supabase
+							.from("profile")
+							.select("id")
+							.eq("stripe_customer", event.data.object.customer)
+							.single();
+
+						const orderExists = await supabase
 							.from("order")
-							.update({ active: true })
+							.select("active")
 							.eq("profile_id", profile.id)
-							.eq("product_id", product.id);
-					} else if (orderExists?.data == null) {
-						await supabase
-							.from("order")
-							.insert([
-								{
-									product_id: product.id,
-									profile_id: profile.id,
-									active: true,
-								},
-							])
-							.select();
+							.eq("product_id", product.id)
+							.single();
+
+						if (
+							orderExists?.data != null &&
+							orderExists?.data?.active == false
+						) {
+							await supabase
+								.from("order")
+								.update({ active: true })
+								.eq("profile_id", profile.id)
+								.eq("product_id", product.id);
+						} else if (orderExists?.data == null) {
+							await supabase
+								.from("order")
+								.insert([
+									{
+										product_id: product.id,
+										profile_id: profile.id,
+										active: true,
+									},
+								])
+								.select();
+						}
 					}
 
 					break;
@@ -88,6 +112,6 @@ export async function POST(req) {
 			status: 400,
 		});
 	}
-   
+
 	return new Response(JSON.stringify({ received: true }));
 }
