@@ -36,7 +36,7 @@ export async function POST(req) {
 	const priceData = await stripe.prices.retrieve(price);
 
 	const orderExists = await supabase
-		.from("order")
+		.from("purchase")
 		.select("active, product_id!inner(*)")
 		.eq("profile_id", session.user.id)
 		.eq("product_id.stripe_product", priceData.product)

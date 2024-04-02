@@ -20,7 +20,7 @@ export default async function ProfilePage() {
 	}
 
 	const { data: orders } = await supabase
-		.from("order")
+		.from("purchase")
 		.select(`*, product_id("*")`)
 		.eq("profile_id", session.user.id);
 

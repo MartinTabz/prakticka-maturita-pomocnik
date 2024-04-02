@@ -65,7 +65,7 @@ export async function POST(req) {
 							.single();
 
 						const orderExists = await supabase
-							.from("order")
+							.from("purchase")
 							.select("active")
 							.eq("profile_id", profile.id)
 							.eq("product_id", product.id)
@@ -76,13 +76,13 @@ export async function POST(req) {
 							orderExists?.data?.active == false
 						) {
 							await supabase
-								.from("order")
+								.from("purchase")
 								.update({ active: true })
 								.eq("profile_id", profile.id)
 								.eq("product_id", product.id);
 						} else if (orderExists?.data == null) {
 							await supabase
-								.from("order")
+								.from("purchase")
 								.insert([
 									{
 										product_id: product.id,

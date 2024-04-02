@@ -24,7 +24,7 @@ export default async function ProduktLayout({ children, params: { slug } }) {
 	}
 
 	const orderData = await supabase
-		.from("order")
+		.from("purchase")
 		.select("active")
 		.eq("product_id", product.id)
 		.eq("profile_id", session.user.id)

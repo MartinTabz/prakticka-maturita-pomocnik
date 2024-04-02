@@ -39,7 +39,7 @@ export default async function ProductPage() {
 
 		if (session) {
 			const { data } = await supabase
-				.from("order")
+				.from("purchase")
 				.select("active")
 				.eq("product_id", product.id)
 				.eq("profile_id", session.user.id)
