@@ -136,7 +136,6 @@ body {
 	}
 }
 
-
 .code-block {
 	position: relative;
 	width: auto;
@@ -168,22 +167,42 @@ body {
 	font-size: 1rem;
 	font-family: "JetBrainsMono", monospace;
 }
-.tiptap pre .hljs-comment, .tiptap pre .hljs-quote {
+.tiptap pre .hljs-comment,
+.tiptap pre .hljs-quote {
 	color: #616161;
 }
-.tiptap pre .hljs-variable, .tiptap pre .hljs-template-variable, .tiptap pre .hljs-attribute, .tiptap pre .hljs-tag, .tiptap pre .hljs-name, .tiptap pre .hljs-regexp, .tiptap pre .hljs-link, .tiptap pre .hljs-name, .tiptap pre .hljs-selector-id, .tiptap pre .hljs-selector-class {
+.tiptap pre .hljs-variable,
+.tiptap pre .hljs-template-variable,
+.tiptap pre .hljs-attribute,
+.tiptap pre .hljs-tag,
+.tiptap pre .hljs-name,
+.tiptap pre .hljs-regexp,
+.tiptap pre .hljs-link,
+.tiptap pre .hljs-name,
+.tiptap pre .hljs-selector-id,
+.tiptap pre .hljs-selector-class {
 	color: #f98181;
 }
-.tiptap pre .hljs-number, .tiptap pre .hljs-meta, .tiptap pre .hljs-built_in, .tiptap pre .hljs-builtin-name, .tiptap pre .hljs-literal, .tiptap pre .hljs-type, .tiptap pre .hljs-params {
+.tiptap pre .hljs-number,
+.tiptap pre .hljs-meta,
+.tiptap pre .hljs-built_in,
+.tiptap pre .hljs-builtin-name,
+.tiptap pre .hljs-literal,
+.tiptap pre .hljs-type,
+.tiptap pre .hljs-params {
 	color: #fbbc88;
 }
-.tiptap pre .hljs-string, .tiptap pre .hljs-symbol, .tiptap pre .hljs-bullet {
+.tiptap pre .hljs-string,
+.tiptap pre .hljs-symbol,
+.tiptap pre .hljs-bullet {
 	color: #b9f18d;
 }
-.tiptap pre .hljs-title, .tiptap pre .hljs-section {
+.tiptap pre .hljs-title,
+.tiptap pre .hljs-section {
 	color: #faf594;
 }
-.tiptap pre .hljs-keyword, .tiptap pre .hljs-selector-tag {
+.tiptap pre .hljs-keyword,
+.tiptap pre .hljs-selector-tag {
 	color: #70cff8;
 }
 .tiptap pre .hljs-emphasis {
@@ -191,12 +210,12 @@ body {
 }
 @media only screen and (max-width: 675px) {
 	.code-block select {
-		font-size: 1.1rem;
+		font-size: 0.9rem;
 	}
 	.tiptap pre {
-		font-size: 1.1rem;
+		font-size: 0.9rem;
 	}
 	.tiptap pre code > div {
-		font-size: 1.1rem;
+		font-size: 0.9rem;
 	}
 }
