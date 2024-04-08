@@ -86,6 +86,8 @@ export default function EditChapterComponent({ chapterData }) {
 		newSuccess(false);
 		newError(false);
 
+		console.log(editor.getHTML());
+
 		if (
 			name != chapterData.name ||
 			description != chapterData.description ||
@@ -104,8 +106,10 @@ export default function EditChapterComponent({ chapterData }) {
 				newError(error.message);
 				return;
 			} else {
-				newSuccess(true);
+				newSuccess("Úspěšně uloženo");
 			}
+		} else {
+			newError("Nenastala žádná změna");
 		}
 
 		setIsLoading(false);

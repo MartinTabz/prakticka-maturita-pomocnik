@@ -122,6 +122,9 @@
 	align-items: center;
 	gap: 5px;
 }
+.editor *:focus {
+	outline: none;
+}
 .editor_menu > button,
 .editor_menu > div {
 	width: 30px;
