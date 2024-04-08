@@ -189,3 +189,14 @@ body {
 .tiptap pre .hljs-emphasis {
 	font-style: italic;
 }
+@media only screen and (max-width: 675px) {
+	.code-block select {
+		font-size: 1.1rem;
+	}
+	.tiptap pre {
+		font-size: 1.1rem;
+	}
+	.tiptap pre code > div {
+		font-size: 1.1rem;
+	}
+}

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
-import style from "@styles/upload.module.css";
 import crypto from "crypto";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -14,6 +13,7 @@ import { EditorContent, useEditor, ReactNodeViewRenderer } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import ListItem from "@tiptap/extension-list-item";
+import { FiLoader } from "react-icons/fi";
 import { Color } from "@tiptap/extension-color";
 import csharp from "highlight.js/lib/languages/csharp";
 import js from "highlight.js/lib/languages/javascript";
@@ -23,16 +23,20 @@ import { createLowlight } from "lowlight";
 import CodeBlockComponent from "@components/code-block-component";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { HexColorPicker } from "react-colorful";
+import style from "@styles/upload.module.css";
 import {
 	LuHeading1,
 	LuPalette,
+	LuImage,
 	LuPilcrow,
 	LuHeading2,
+	LuCode2,
 	LuItalic,
 	LuBold,
 	LuListOrdered,
 	LuList,
 } from "react-icons/lu";
+import { useNotifications } from "@utils/notificationcontext";
 
 const lowlight = createLowlight();
 lowlight.register("html", html);
@@ -44,8 +48,7 @@ const supabase = createClientComponentClient();
 
 export default function EditChapterComponent({ chapterData }) {
 	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState("");
-	const [success, setSuccess] = useState(false);
+	const { newError, newSuccess } = useNotifications();
 
 	const [name, setName] = useState(chapterData.name);
 	const [description, setDescription] = useState(chapterData.description);
@@ -80,8 +83,8 @@ export default function EditChapterComponent({ chapterData }) {
 	const handleSave = async (e) => {
 		e.preventDefault();
 		setIsLoading(true);
-		setSuccess(false);
-		setError(false);
+		newSuccess(false);
+		newError(false);
 
 		if (
 			name != chapterData.name ||
@@ -98,10 +101,10 @@ export default function EditChapterComponent({ chapterData }) {
 				.eq("id", chapterData.id)
 				.select();
 			if (error) {
-				setError(error.message);
+				newError(error.message);
 				return;
 			} else {
-				setSuccess(true);
+				newSuccess(true);
 			}
 		}
 
@@ -109,23 +112,15 @@ export default function EditChapterComponent({ chapterData }) {
 	};
 
 	return (
-		<div>
-			<div>
-				{error && (
-					<div>
-						<b>Chyba: </b>
-						{error}
-					</div>
-				)}
-				{success && <div>Úspěch</div>}
-				<div>
-					<h1>Upravit kapitolu</h1>
-					<span>
-						<b>ID: </b>
-						{chapterData.id}
-					</span>
-				</div>
-				<div>
+		<div className={style.section}>
+			<div className={style.area}>
+				<span className={style.infospan}>
+					<b>ID: </b>
+					{chapterData.id}
+				</span>
+				<h1>Upravit kapitolu</h1>
+
+				<div className={style.input_area}>
 					<label>Název</label>
 					<input
 						type="text"
@@ -133,7 +128,7 @@ export default function EditChapterComponent({ chapterData }) {
 						onChange={(e) => setName(e.target.value)}
 					/>
 				</div>
-				<div>
+				<div className={style.input_area}>
 					<label>Popis</label>
 					<textarea
 						type="text"
@@ -141,16 +136,20 @@ export default function EditChapterComponent({ chapterData }) {
 						onChange={(e) => setDescription(e.target.value)}
 					/>
 				</div>
-				<div>
-					<MenuBar editor={editor} />
-					{isLoading ? <div></div> : <EditorContent editor={editor} />}
-				</div>
-				<div>
-					{isLoading ? (
-						<span>Ukládá se</span>
-					) : (
-						<button onClick={handleSave}>Uložit změny</button>
-					)}
+				{!isLoading && (
+					<div className={style.editor}>
+						<MenuBar editor={editor} />
+						<EditorContent editor={editor} />
+					</div>
+				)}
+				<div className={style.upload}>
+					<div className={style.upload_btn}>
+						{isLoading ? (
+							<FiLoader color={"white"} className={`loader`} />
+						) : (
+							<button onClick={handleSave}>Uložit změny</button>
+						)}
+					</div>
 				</div>
 			</div>
 		</div>
@@ -158,7 +157,7 @@ export default function EditChapterComponent({ chapterData }) {
 }
 
 const MenuBar = ({ editor }) => {
-	const [error, setError] = useState("");
+	const { newError } = useNotifications();
 
 	const [pickedColor, setPickedColor] = useState("#eb4034");
 	const [openedColorPicker, setOpenedColorPicker] = useState(false);
@@ -195,7 +194,7 @@ const MenuBar = ({ editor }) => {
 
 				if (upload_error && !upload_error.error === "Duplicate") {
 					console.log(upload_error);
-					setError(upload_error.message);
+					newError(upload_error.message);
 					return;
 				}
 
@@ -206,7 +205,7 @@ const MenuBar = ({ editor }) => {
 			} while (!path || attempts >= 10);
 
 			if (attempts >= 10) {
-				setError("Něco se pokazilo při nahrávání obrázku");
+				newError("Něco se pokazilo při nahrávání obrázku");
 				return;
 			}
 
@@ -220,7 +219,7 @@ const MenuBar = ({ editor }) => {
 					.run();
 			}
 		} catch (error) {
-			setError(error.message);
+			newError(error.message);
 			return;
 		}
 	};
@@ -279,14 +278,17 @@ const MenuBar = ({ editor }) => {
 				onClick={() => editor.chain().focus().toggleCodeBlock().run()}
 				className={editor.isActive("codeBlock") ? "is-active" : ""}
 			>
-				code block
+				<LuCode2 />
 			</button>
-			<input
-				type="file"
-				accept="image/*"
-				multiple={false}
-				onChange={uploadFile}
-			/>
+			<div>
+				<LuImage />
+				<input
+					type="file"
+					accept="image/*"
+					multiple={false}
+					onChange={uploadFile}
+				/>
+			</div>
 			<button
 				onClick={() => editor.chain().focus().setColor(pickedColor).run()}
 				className={
@@ -311,7 +313,6 @@ const MenuBar = ({ editor }) => {
 			>
 				<LuPalette />
 			</button>
-			{error && <div>{error}</div>}
 		</div>
 	);
 };
