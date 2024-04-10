@@ -12,7 +12,7 @@ export default function RootLayout({ children }) {
 		<html lang="cs">
 			<body>
 				<NotificationProvider>
-					<DisableCopying>{children}</DisableCopying>
+					{children}
 				</NotificationProvider>
 			</body>
 		</html>
