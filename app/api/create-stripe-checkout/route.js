@@ -16,6 +16,12 @@ export async function POST(req) {
 		return sendResponse(null, "Není přihlášen uživatel", 401);
 	}
 
+	var del = true;
+
+	if (del) {
+		return sendResponse(null, "Trasa není aktivní", 401);
+	}
+
 	var price = null;
 
 	try {

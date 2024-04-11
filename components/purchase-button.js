@@ -9,25 +9,26 @@ import { useState } from "react";
 
 export default function PurchaseButton({ price }) {
 	const router = useRouter();
-	const { newError } = useNotifications();
+	const { newError, newSuccess } = useNotifications();
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handlePurchase = async () => {
-		setIsLoading(true);
-		try {
-			const { data } = await axios.post("/api/create-stripe-checkout", {
-				price: price,
-			});
-			if (data?.url) {
-				router.push(data.url);
-			} else {
-				newError(data?.error);
-			}
-		} catch (error) {
-			console.log(error.response.data);
-			newError(error.response.data.error);
-		}
-		setIsLoading(false);
+		// setIsLoading(true);
+		// try {
+		// 	const { data } = await axios.post("/api/create-stripe-checkout", {
+		// 		price: price,
+		// 	});
+		// 	if (data?.url) {
+		// 		router.push(data.url);
+		// 	} else {
+		// 		newError(data?.error);
+		// 	}
+		// } catch (error) {
+		// 	console.log(error.response.data);
+		// 	newError(error.response.data.error);
+		// }
+		// setIsLoading(false);
+		newSuccess("Napiš Martinovi a do školy si připrav hotovost 500 Kč");
 	};
 	return (
 		<button disabled={isLoading} className={style.buy} onClick={handlePurchase}>
