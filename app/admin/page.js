@@ -3,6 +3,7 @@ import ProductDropdownComponent from "@components/admin/product-dropdown";
 import NewDropdownComponent from "@components/admin/new-dropdown";
 import Navigation from "@components/navigation";
 import style from "@styles/admin.module.css";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,7 @@ export default async function AdminPage() {
 					<NewDropdownComponent />
 				</div>
 				<ProductDropdownComponent products={productDetails} />
+				<Link className={style.add_prod} href={"/admin/pridat-produkt-uzivateli"}>Přidat produkt uživateli</Link>
 			</div>
 		</div>
 	);

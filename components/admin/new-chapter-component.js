@@ -376,3 +376,4 @@ const MenuBar = ({ editor }) => {
 		</div>
 	);
 };
+
