@@ -24,7 +24,7 @@ export default async function AdminPage() {
 					<NewDropdownComponent />
 				</div>
 				<ProductDropdownComponent products={productDetails} />
-				<Link className={style.add_prod} href={"/admin/pridat-produkt-uzivateli"}>Přidat produkt uživateli</Link>
+				<a className={style.add_prod} href={"/admin/pridat-produkt-uzivateli"}>Přidat produkt uživateli</a>
 			</div>
 		</div>
 	);

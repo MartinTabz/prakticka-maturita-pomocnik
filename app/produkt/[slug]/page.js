@@ -54,9 +54,9 @@ export default async function ProduktPage({ params: { slug } }) {
 											<h3>{subject.name}</h3>
 											<p>{subject.description}</p>
 										</div>
-										<Link href={`/produkt/${slug}/${subject.slug}`}>
+										<a href={`/produkt/${slug}/${subject.slug}`}>
 											Otevřít
-										</Link>
+										</a>
 									</div>
 								</div>
 							))

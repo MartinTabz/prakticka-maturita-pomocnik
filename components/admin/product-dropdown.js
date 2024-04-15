@@ -45,18 +45,18 @@ export default function ProductDropdownComponent({ products }) {
 														<p>{chapter.description}</p>
 													</div>
 													<div>
-														<Link href={`/admin/kapitola/${chapter.id}`}>
+														<a href={`/admin/kapitola/${chapter.id}`}>
 															Upravit
-														</Link>
+														</a>
 													</div>
 												</div>
 											))}
-											<Link
+											<a
 												href={`/admin/nova-kapitola?p=${subject.id}`}
 												className={style.add}
 											>
 												Přidat novou kapitolu
-											</Link>
+											</a>
 										</div>
 									)}
 								</div>

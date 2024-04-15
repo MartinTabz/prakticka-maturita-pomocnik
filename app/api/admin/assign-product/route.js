@@ -40,8 +40,6 @@ export async function POST(req) {
 		return sendResponse(null, "Chybí některá povinná pole", 200);
 	}
 
-	console.log(formData);
-
 	const supabase = getServiceSupabase();
 
 	const orderExists = await supabase
