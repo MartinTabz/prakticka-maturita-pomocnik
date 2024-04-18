@@ -102,12 +102,12 @@
 	}
 }
 .content img {
-	background-color: rgb(199, 199, 199);
+	background-color: rgb(241, 241, 241);
 	width: 100%;
 	border-radius: 20px;
-	height: 700px;
+	height: 550px;
 	object-fit: contain;
-	margin: 15px 0;
+	margin: 20px 0;
 }
 .content > div > p {
 	padding-bottom: 10px;
