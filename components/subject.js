@@ -56,10 +56,10 @@ export default function SubjectComponent({ chapters, product, subject }) {
 								<p>{activeChapter.description}</p>
 							</div>
 							<hr className={style.cara} />
-							<div
-								
-								className={style.content}
-							>
+							<div className={style.content}>
+								{activeChapter.id == "ca6445ff-3751-4e40-9a0e-455e274c2046" && (
+									<a className={style.sql} href="/vytvarec-sql-prikazu">Vytvářeč SQL příkazů</a>
+								)}
 								{isLoading ? (
 									<span>Načítá se</span>
 								) : (
