@@ -43,7 +43,9 @@ export default function SqlBuilder() {
 		{ fk: "Objednavka.id_zakaznik", pk: "Zakaznik.id" },
 	]);
 	const [activeAction, setActiveAction] = useState("SELECT");
-	const [definition, setDefinition] = useState("Z tabulky Objednavka vyber všechny objednávky zákazníka s id = 1");
+	const [definition, setDefinition] = useState(
+		"Z tabulky Objednavka vyber všechny objednávky zákazníka s id = 1"
+	);
 
 	const deleteAttribute = (tableIndex, attributeIndex) => {
 		setTables((prevTables) => {
@@ -185,7 +187,7 @@ export default function SqlBuilder() {
 			try {
 				const { data } = await axios.post("/api/build-sql", sentData);
 				if (data?.result) {
-               console.log(data.result)
+					console.log(data.result);
 					setResult(data.result);
 				} else {
 					newError("Něco se pokazilo");
@@ -366,7 +368,14 @@ export default function SqlBuilder() {
 						}
 					/>
 				</section>
-				<button onClick={handleSend}>Vytvořit</button>
+				<div>
+					{isLoading ? (
+						<span>Načítá se</span>
+					) : (
+						<button onClick={handleSend}>Vytvořit</button>
+					)}
+				</div>
+				{result && <div>{result}</div>}
 			</div>
 		</section>
 	);

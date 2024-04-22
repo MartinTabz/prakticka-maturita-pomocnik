@@ -19,7 +19,6 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req) {
 	const ip = req.ip ?? "127.0.0.1";
-	console.log(ip);
 
 	const { limit, reset, remaining } = await rateLimit.limit(ip);
 
@@ -99,8 +98,13 @@ export async function POST(req) {
 		});
 		if (run.status === "completed") {
 			const messages = await openai.beta.threads.messages.list(run.thread_id);
-			console.log(messages)
-			return sendResponse(messages, null, 200);
+			console.log(messages);
+			const query = JSON.parse(messages?.body?.data[0]?.content[0]?.text?.value);
+			if(query.query) {
+				return sendResponse(query.query, null, 200);
+			} else {
+				return sendResponse(null, "Něco se pokazilo", 400);
+			}
 		} else {
 			return sendResponse(null, "Něco se pokazilo", 400);
 		}
