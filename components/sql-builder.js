@@ -267,9 +267,9 @@ export default function SqlBuilder() {
 					</div>
 					<form
 						className={style.new_table}
-						onSubmit={() => {
+						onSubmit={(e) => {
 							if (!isLoading) {
-								handleNewTable();
+								handleNewTable(e);
 							}
 						}}
 					>
@@ -402,9 +402,9 @@ export default function SqlBuilder() {
 						</div>
 						<button
 							className={style.add_rel_btn}
-							onClick={() => {
+							onClick={(e) => {
 								if (!isLoading) {
-									handleNewRelation();
+									handleNewRelation(e);
 								}
 							}}
 						>
