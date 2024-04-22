@@ -1,9 +1,24 @@
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import { Ratelimit } from "@upstash/ratelimit";
+import { kv } from "@vercel/kv";
+
+const rateLimit = new Ratelimit({
+	redis: kv,
+	limiter: Ratelimit.slidingWindow(1, "10s"),
+});
+
+export const config = {
+	runtime: "edge",
+};
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req) {
+	const ip = req.ip ?? "127.0.0.1";
+
+	const { limit, reset, remaining } = await rateLimit.limit(ip);
+
 	const supabaseAuth = createRouteHandlerClient({ cookies });
 	const {
 		data: { session },
@@ -46,17 +61,34 @@ export async function POST(req) {
 		return sendResponse(null, "Definice musí být delší", 400);
 	}
 
-	const { tables, relations, action, definition } = formData;
+	if (remaining === 0) {
+		return new Response(
+			JSON.stringify({
+				result: null,
+				error: "Můžete posílat dotazy pouze jednou za 10 sekund",
+			}),
+			{
+				status: 429,
+				headers: {
+					"X-RateLimit-Limit": limit.toString(),
+					"X-RateLimit-Remaining": remaining.toString(),
+					"X-RateLimit-Reset": reset.toString(),
+				},
+			}
+		);
+	} else {
+		const { tables, relations, action, definition } = formData;
 
-	const sentence = `Počet tabulek ve schématu: ${
-		tables.length
-	} => ${generateTableSentences(tables)} ${generateRelationSentences(
-		relations
-	)} Používat se bude akce ${action}. Uživatel chce, aby tento dotaz (query) dělal následující: ${definition}`;
+		const sentence = `Počet tabulek ve schématu: ${
+			tables.length
+		} => ${generateTableSentences(tables)} ${generateRelationSentences(
+			relations
+		)} Používat se bude akce ${action}. Uživatel chce, aby tento dotaz (query) dělal následující: ${definition}`;
 
-	console.log(sentence);
+		console.log(sentence);
 
-	return sendResponse("Gay", null, 200);
+		return sendResponse("Gay", null, 200);
+	}
 }
 
 function sendResponse(result, error, status) {
@@ -81,11 +113,15 @@ const generateTableSentences = (tables) => {
 };
 
 const generateRelationSentences = (relations) => {
-	return relations
-		.map((relation, index) => {
-			return `Vztah ${index + 1}: ${
-				relation.fk
-			} je cizí klíč, který je spojen s ${relation.pk}.`;
-		})
-		.join(" ");
+	if (relations.length > 0) {
+		return relations
+			.map((relation, index) => {
+				return `Vztah ${index + 1}: ${
+					relation.fk
+				} je cizí klíč, který je spojen s ${relation.pk}.`;
+			})
+			.join(" ");
+	} else {
+		return "";
+	}
 };
