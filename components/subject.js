@@ -80,7 +80,11 @@ export default function SubjectComponent({ chapters, product, subject }) {
 							<hr className={style.cara} />
 							<div className={style.content}>
 								{activeChapter.id == "ca6445ff-3751-4e40-9a0e-455e274c2046" && (
-									<a className={style.sql} href="/vytvarec-sql-prikazu">
+									<a
+										className={style.sql}
+										href="/vytvarec-sql-prikazu"
+										target="_blank"
+									>
 										Vytvářeč SQL příkazů
 									</a>
 								)}
