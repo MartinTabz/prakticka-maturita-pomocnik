@@ -13,9 +13,7 @@ const openai = new OpenAI({
 	apiKey: process.env.OPENAI_API,
 });
 
-export const config = {
-	runtime: "edge",
-};
+export const runtime = "edge";
 
 export const dynamic = "force-dynamic";
 
