@@ -185,6 +185,7 @@ export default function SqlBuilder() {
 			try {
 				const { data } = await axios.post("/api/build-sql", sentData);
 				if (data?.result) {
+               console.log(data.result)
 					setResult(data.result);
 				} else {
 					newError("Něco se pokazilo");

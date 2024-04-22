@@ -2,10 +2,15 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { Ratelimit } from "@upstash/ratelimit";
 import { kv } from "@vercel/kv";
+import OpenAI from "openai";
 
 const rateLimit = new Ratelimit({
 	redis: kv,
 	limiter: Ratelimit.slidingWindow(1, "10s"),
+});
+
+const openai = new OpenAI({
+	apiKey: process.env.OPENAI_API,
 });
 
 export const config = {
@@ -85,9 +90,21 @@ export async function POST(req) {
 			relations
 		)} Používat se bude akce ${action}. Uživatel chce, aby tento dotaz (query) dělal následující: ${definition}`;
 
-		console.log(sentence);
-
-		return sendResponse("Gay", null, 200);
+		const thread = await openai.beta.threads.create();
+		await openai.beta.threads.messages.create(thread.id, {
+			role: "user",
+			content: sentence,
+		});
+		let run = await openai.beta.threads.runs.createAndPoll(thread.id, {
+			assistant_id: "asst_hAbJbCik9ICf50jS0IrLGlaB",
+		});
+		if (run.status === "completed") {
+			const messages = await openai.beta.threads.messages.list(run.thread_id);
+			console.log(messages)
+			return sendResponse(messages, null, 200);
+		} else {
+			return sendResponse(null, "Něco se pokazilo", 400);
+		}
 	}
 }
 
