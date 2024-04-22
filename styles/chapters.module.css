@@ -49,6 +49,20 @@
 	gap: 10px;
 	margin-bottom: 25px;
 }
+.switch > div {
+	padding: 7px 15px;
+	text-align: left;
+	border-radius: 10px;
+	border: 1px solid grey;
+	cursor: not-allowed;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+	background-color: gray;
+	font-size: 1.1rem;
+	font-weight: 600;
+}
 .switch > button {
 	padding: 7px 15px;
 	text-align: left;

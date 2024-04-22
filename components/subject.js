@@ -5,14 +5,29 @@ import Link from "next/link";
 import { FaAngleLeft } from "react-icons/fa6";
 import style from "@styles/chapters.module.css";
 import HtmlContent from "./html-content";
+import { FaLock } from "react-icons/fa";
 
 export default function SubjectComponent({ chapters, product, subject }) {
 	const [isLoading, setIsLoading] = useState(true);
 	const [activeChapter, setActiveChapter] = useState({});
 	useEffect(() => {
-		console.log(chapters);
 		if (chapters.length > 0) {
-			setActiveChapter(chapters[0]);
+			var i = 0;
+			var chosenIndex = null;
+			do {
+				if (i >= chapters.length - 1) {
+					setActiveChapter({});
+					return;
+				}
+				if (
+					!chapters[i].unlocks ||
+					new Date(chapters[i].unlocks) <= new Date()
+				) {
+					chosenIndex = i;
+				}
+				i++;
+			} while (chosenIndex == null);
+			setActiveChapter(chapters[chosenIndex]);
 			setIsLoading(false);
 		} else {
 			setActiveChapter({});
@@ -42,14 +57,21 @@ export default function SubjectComponent({ chapters, product, subject }) {
 					{chapters.length > 0 ? (
 						<div>
 							<div className={style.switch}>
-								{chapters.map((chapter) => (
-									<button
-										onClick={() => handleChapterClick(chapter)}
-										key={chapter.id}
-									>
-										{chapter.name}
-									</button>
-								))}
+								{chapters.map((chapter) =>
+									chapter.unlocks && new Date(chapter.unlocks) > new Date() ? (
+										<div key={chapter.id}>
+											<FaLock />
+											{chapter.name}
+										</div>
+									) : (
+										<button
+											onClick={() => handleChapterClick(chapter)}
+											key={chapter.id}
+										>
+											{chapter.name}
+										</button>
+									)
+								)}
 							</div>
 							<div className={style.chapter_desc}>
 								<h2>{activeChapter.name}</h2>
@@ -58,7 +80,9 @@ export default function SubjectComponent({ chapters, product, subject }) {
 							<hr className={style.cara} />
 							<div className={style.content}>
 								{activeChapter.id == "ca6445ff-3751-4e40-9a0e-455e274c2046" && (
-									<a className={style.sql} href="/vytvarec-sql-prikazu">Vytvářeč SQL příkazů</a>
+									<a className={style.sql} href="/vytvarec-sql-prikazu">
+										Vytvářeč SQL příkazů
+									</a>
 								)}
 								{isLoading ? (
 									<span>Načítá se</span>
