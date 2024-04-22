@@ -6,7 +6,7 @@ import OpenAI from "openai";
 
 const rateLimit = new Ratelimit({
 	redis: kv,
-	limiter: Ratelimit.slidingWindow(1, "10s"),
+	limiter: Ratelimit.slidingWindow(3, "10s"),
 });
 
 const openai = new OpenAI({
@@ -19,6 +19,7 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req) {
 	const ip = req.ip ?? "127.0.0.1";
+	console.log(ip);
 
 	const { limit, reset, remaining } = await rateLimit.limit(ip);
 
