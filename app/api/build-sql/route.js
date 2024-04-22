@@ -3,10 +3,11 @@ import { cookies } from "next/headers";
 import { Ratelimit } from "@upstash/ratelimit";
 import { kv } from "@vercel/kv";
 import OpenAI from "openai";
+import { getServiceSupabase } from "@utils/supabase";
 
 const rateLimit = new Ratelimit({
 	redis: kv,
-	limiter: Ratelimit.slidingWindow(3, "10s"),
+	limiter: Ratelimit.slidingWindow(2, "15s"),
 });
 
 const openai = new OpenAI({
@@ -33,7 +34,7 @@ export async function POST(req) {
 
 	const { data: purchase } = await supabaseAuth
 		.from("purchase")
-		.select("active")
+		.select("active, uses")
 		.eq("profile_id", session.user.id)
 		.eq("product_id", "42bac6af-9c9f-4289-a486-b6973a079131")
 		.single();
@@ -41,6 +42,12 @@ export async function POST(req) {
 	if (purchase == null || purchase?.active == false) {
 		return sendResponse(null, "Neoprávněný uživatel", 401);
 	}
+
+	if (purchase?.uses <= 0) {
+		return sendResponse(null, "Byl vyčerpán počet možných generování", 400);
+	}
+
+	const uses = purchase.uses;
 
 	var formData = null;
 
@@ -68,7 +75,7 @@ export async function POST(req) {
 		return new Response(
 			JSON.stringify({
 				result: null,
-				error: "Můžete posílat dotazy pouze jednou za 10 sekund",
+				error: "Můžete posílat dotazy pouze jednou za 15 sekund",
 			}),
 			{
 				status: 429,
@@ -99,8 +106,17 @@ export async function POST(req) {
 		if (run.status === "completed") {
 			const messages = await openai.beta.threads.messages.list(run.thread_id);
 			console.log(messages);
-			const query = JSON.parse(messages?.body?.data[0]?.content[0]?.text?.value);
-			if(query.query) {
+			const query = JSON.parse(
+				messages?.body?.data[0]?.content[0]?.text?.value
+			);
+			if (query.query) {
+				const supabase = getServiceSupabase();
+				await supabase
+					.from("purchase")
+					.update({ uses: uses - 1 })
+					.eq("profile_id", session.user.id)
+					.eq("product_id", "42bac6af-9c9f-4289-a486-b6973a079131")
+					.single();
 				return sendResponse(query.query, null, 200);
 			} else {
 				return sendResponse(null, "Něco se pokazilo", 400);

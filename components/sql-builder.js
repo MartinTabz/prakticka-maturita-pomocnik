@@ -10,7 +10,7 @@ import { TiDelete } from "react-icons/ti";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { FaChevronDown } from "react-icons/fa";
 
-export default function SqlBuilder() {
+export default function SqlBuilder({ uses: rawUses }) {
 	const { newError } = useNotifications();
 	const [actions, setActions] = useState([
 		{ name: "SELECT", desc: "Vypsat" },
@@ -18,6 +18,7 @@ export default function SqlBuilder() {
 		{ name: "DELETE", desc: "Smazat" },
 		{ name: "UPDATE", desc: "Upravit" },
 	]);
+	const [uses, setUses] = useState(rawUses);
 	const [isLoading, setIsLoading] = useState(false);
 	const [result, setResult] = useState(null);
 
@@ -186,6 +187,7 @@ export default function SqlBuilder() {
 				if (data?.result) {
 					console.log(data.result);
 					setResult(data.result);
+					setUses(uses - 1)
 				} else {
 					newError("Něco se pokazilo");
 				}
@@ -474,6 +476,7 @@ export default function SqlBuilder() {
 							<button onClick={handleSend}>Vytvořit</button>
 						)}
 					</div>
+					<span className={style.left}>Zbývá <b>{uses}</b> generování</span>
 				</div>
 			</div>
 		</section>

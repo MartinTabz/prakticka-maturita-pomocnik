@@ -29,5 +29,5 @@ export default async function SqlCommandCreator() {
 		redirect("/produkty");
 	}
 
-	return <SqlBuilder />;
+	return <SqlBuilder uses={hasPurchase.data[0].uses} />;
 }
