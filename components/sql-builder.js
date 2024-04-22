@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import axios from "axios";
+import style from "@styles/sql.module.css";
 import { useNotifications } from "@utils/notificationcontext";
+import { RiOpenaiFill, RiDeleteBin5Fill } from "react-icons/ri";
+import { FiLoader } from "react-icons/fi";
+import { TiDelete } from "react-icons/ti";
+import { FaArrowRightLong } from "react-icons/fa6";
+import { FaChevronDown } from "react-icons/fa";
 
 export default function SqlBuilder() {
 	const { newError } = useNotifications();
@@ -20,32 +26,11 @@ export default function SqlBuilder() {
 	const [isOpenedPk, setIsOpenedPk] = useState(false);
 	const [primaryKey, setPrimaryKey] = useState(null);
 
-	const [tables, setTables] = useState([
-		{
-			name: "Zakaznik",
-			attributes: [
-				{ name: "id", type: "pk" },
-				{ name: "jmeno", type: "string" },
-				{ name: "rok_narozeni", type: "int" },
-			],
-		},
-		{
-			name: "Objednavka",
-			attributes: [
-				{ name: "id", type: "pk" },
-				{ name: "cena", type: "int" },
-				{ name: "id_zakaznik", type: "fk" },
-			],
-		},
-	]);
+	const [tables, setTables] = useState([]);
 
-	const [relations, setRelations] = useState([
-		{ fk: "Objednavka.id_zakaznik", pk: "Zakaznik.id" },
-	]);
-	const [activeAction, setActiveAction] = useState("SELECT");
-	const [definition, setDefinition] = useState(
-		"Z tabulky Objednavka vyber všechny objednávky zákazníka s id = 1"
-	);
+	const [relations, setRelations] = useState([]);
+	const [activeAction, setActiveAction] = useState(null);
+	const [definition, setDefinition] = useState("");
 
 	const deleteAttribute = (tableIndex, attributeIndex) => {
 		setTables((prevTables) => {
@@ -70,6 +55,16 @@ export default function SqlBuilder() {
 				console.error("Invalid table index:", tableIndex);
 			}
 			return updatedTables;
+		});
+	};
+
+	const deleteRelation = (e, relIndex) => {
+		e.preventDefault();
+		setRelations((prevRelations) => {
+			const updatedRelations = prevRelations.filter(
+				(_, index) => index !== relIndex
+			);
+			return updatedRelations;
 		});
 	};
 
@@ -154,6 +149,8 @@ export default function SqlBuilder() {
 				...prevRelations,
 				{ fk: foreignKey, pk: primaryKey },
 			]);
+			setForeignKey(null);
+			setPrimaryKey(null);
 		}
 	};
 
@@ -201,34 +198,59 @@ export default function SqlBuilder() {
 	};
 
 	return (
-		<section>
-			<div>
-				<div>
+		<section className={style.section}>
+			<div className={style.area}>
+				<div className={style.top_info}>
 					<h1>Vytvářeč SQL dotazů</h1>
-					<p></p>
+					<p>
+						Poháněno pomocí GPT 4.0 <RiOpenaiFill />
+					</p>
 				</div>
 				<hr />
-				<section>
+				<section className={style.tables_section}>
 					<h2>Tabulky</h2>
-					<div>
+					<div className={style.tables_grid}>
 						{tables.map((t, index) => (
-							<div key={index}>
-								<div>
+							<div className={style.table} key={index}>
+								<div className={style.table_head}>
 									<h3>{t.name}</h3>
-									<button onClick={() => handleDeleteTable(index)}>X</button>
+									<button
+										onClick={() => {
+											if (!isLoading) {
+												handleDeleteTable(index);
+											}
+										}}
+									>
+										<RiDeleteBin5Fill />
+									</button>
 								</div>
 
-								<div>
+								<div className={style.table_content}>
 									{t.attributes.map((a, i) => (
-										<div index={i}>
-											<span>{a.name}</span>
-											<i>({a.type})</i>
-											<button onClick={() => deleteAttribute(index, i)}>
-												X
+										<div className={style.attribute} index={i}>
+											<div className={style.att_spec}>
+												<span>{a.name}</span>
+												<i>({a.type})</i>
+											</div>
+											<button
+												onClick={() => {
+													if (!isLoading) {
+														deleteAttribute(index, i);
+													}
+												}}
+											>
+												<TiDelete />
 											</button>
 										</div>
 									))}
-									<form onSubmit={(e) => handleNewAttribute(e, index)}>
+									<form
+										className={style.new_att}
+										onSubmit={(e) => {
+											if (!isLoading) {
+												handleNewAttribute(e, index);
+											}
+										}}
+									>
 										<input placeholder="Nový atribut" type="text" />
 										<select>
 											<option value="int">Číslo</option>
@@ -242,34 +264,66 @@ export default function SqlBuilder() {
 								</div>
 							</div>
 						))}
-						<form onSubmit={handleNewTable}>
-							<input placeholder="Název nové tabulky" type="text" />
-							<button type="submit">+</button>
-						</form>
 					</div>
+					<form
+						className={style.new_table}
+						onSubmit={() => {
+							if (!isLoading) {
+								handleNewTable();
+							}
+						}}
+					>
+						<input placeholder="Název nové tabulky" type="text" />
+						<button type="submit">+</button>
+					</form>
 				</section>
 				<hr />
-				<section>
+				<section className={style.relations_area}>
 					<h2>Vztahy mezi tabulkami</h2>
-					<div>
+					<div className={style.existing_rel}>
 						{relations.map((rel, index) => (
-							<div key={index}>
+							<div className={style.existing_rel_item} key={index}>
 								<p>{rel.fk}</p>
-								<span>-&#62;</span>
+								<span>
+									<FaArrowRightLong />
+								</span>
 								<p>{rel.pk}</p>
+								<button
+									className={style.del_rel}
+									onClick={(e) => {
+										if (!isLoading) {
+											deleteRelation(e, index);
+										}
+									}}
+								>
+									<RiDeleteBin5Fill />
+								</button>
 							</div>
 						))}
 					</div>
-					<div>
-						<div>
+					<div className={style.add_rel}>
+						<div className={style.drop_area}>
 							<div>
 								<h3>Cizí klíč</h3>
-								<div>
-									<div onClick={() => setIsOpenedFk(!isOpenedFk)}>
-										{foreignKey ? foreignKey : "Vybrat"}
+								<div className={style.dropdown}>
+									<div
+										className={style.dropdown_main}
+										onClick={() => {
+											if (!isLoading) {
+												setIsOpenedFk(!isOpenedFk);
+											}
+										}}
+										style={{
+											borderRadius: isOpenedFk ? "10px 10px 0 0" : "10px",
+										}}
+									>
+										<span>{foreignKey ? foreignKey : "Vybrat"}</span>
+										<FaChevronDown
+											style={{ transform: isOpenedFk && "rotate(180deg)" }}
+										/>
 									</div>
 									{isOpenedFk && (
-										<div>
+										<div className={style.dropdown_list}>
 											{tables
 												.flatMap((table) =>
 													table.attributes
@@ -281,12 +335,15 @@ export default function SqlBuilder() {
 												)
 												.map((t, index) => (
 													<div
+														className={style.dropdown_item}
 														key={index}
 														onClick={() => {
-															setForeignKey(
-																`${t.tableName}.${t.attributeName}`
-															);
-															setIsOpenedFk(false);
+															if (!isLoading) {
+																setForeignKey(
+																	`${t.tableName}.${t.attributeName}`
+																);
+																setIsOpenedFk(false);
+															}
 														}}
 													>{`${t.tableName}.${t.attributeName}`}</div>
 												))}
@@ -296,12 +353,25 @@ export default function SqlBuilder() {
 							</div>
 							<div>
 								<h3>Primární klíč</h3>
-								<div>
-									<div onClick={() => setIsOpenedPk(!isOpenedPk)}>
-										{primaryKey ? primaryKey : "Vybrat"}
+								<div className={style.dropdown}>
+									<div
+										className={style.dropdown_main}
+										onClick={() => {
+											if (!isLoading) {
+												setIsOpenedPk(!isOpenedPk);
+											}
+										}}
+										style={{
+											borderRadius: isOpenedPk ? "10px 10px 0 0" : "10px",
+										}}
+									>
+										<span>{primaryKey ? primaryKey : "Vybrat"}</span>
+										<FaChevronDown
+											style={{ transform: isOpenedPk && "rotate(180deg)" }}
+										/>
 									</div>
 									{isOpenedPk && (
-										<div>
+										<div className={style.dropdown_list}>
 											{tables
 												.flatMap((table) =>
 													table.attributes
@@ -313,12 +383,15 @@ export default function SqlBuilder() {
 												)
 												.map((t, index) => (
 													<div
+														className={style.dropdown_item}
 														key={index}
 														onClick={() => {
-															setPrimaryKey(
-																`${t.tableName}.${t.attributeName}`
-															);
-															setIsOpenedPk(false);
+															if (!isLoading) {
+																setPrimaryKey(
+																	`${t.tableName}.${t.attributeName}`
+																);
+																setIsOpenedPk(false);
+															}
 														}}
 													>{`${t.tableName}.${t.attributeName}`}</div>
 												))}
@@ -327,33 +400,53 @@ export default function SqlBuilder() {
 								</div>
 							</div>
 						</div>
-						<button onClick={handleNewRelation}>Přidat vztah</button>
+						<button
+							className={style.add_rel_btn}
+							onClick={() => {
+								if (!isLoading) {
+									handleNewRelation();
+								}
+							}}
+						>
+							Přidat vztah
+						</button>
 					</div>
 				</section>
 				<hr />
-				<section>
+				<section className={style.action_area}>
 					<h2>Akce</h2>
-					<div>
+					<div className={style.actions}>
 						{actions.map((action, index) => (
 							<div
+								className={style.action}
 								key={index}
-								onClick={() => setActiveAction(action.name)}
+								onClick={() => {
+									if (!isLoading) {
+										setActiveAction(action.name);
+									}
+								}}
 								style={{
-									border: activeAction == action.name && "2px solid grey",
+									border:
+										activeAction == action.name
+											? "3px solid var(--clr-main)"
+											: "1px solid grey",
 								}}
 							>
 								<h3>{action.name}</h3>
-								<p>{action.desc}</p>
+								<p>({action.desc})</p>
 							</div>
 						))}
 					</div>
 				</section>
-				<section>
+				<hr />
+				<section className={style.def}>
 					<h2>Definice</h2>
 					<textarea
 						value={definition}
 						onChange={(e) => {
-							setDefinition(e.target.value);
+							if (!isLoading) {
+								setDefinition(e.target.value);
+							}
 						}}
 						placeholder={
 							activeAction == "SELECT"
@@ -368,14 +461,20 @@ export default function SqlBuilder() {
 						}
 					/>
 				</section>
-				<div>
-					{isLoading ? (
-						<span>Načítá se</span>
-					) : (
-						<button onClick={handleSend}>Vytvořit</button>
-					)}
+				{result && (
+					<section className={style.result_section}>
+						<div className={style.result_inner}>{result}</div>
+					</section>
+				)}
+				<div className={style.send_area}>
+					<div className={style.send_button}>
+						{isLoading ? (
+							<FiLoader style={{ fontSize: "1.5rem" }} className={`loader`} />
+						) : (
+							<button onClick={handleSend}>Vytvořit</button>
+						)}
+					</div>
 				</div>
-				{result && <div>{result}</div>}
 			</div>
 		</section>
 	);
