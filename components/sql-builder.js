@@ -12,8 +12,43 @@ export default function SqlBuilder() {
 		{ name: "DELETE", desc: "Smazat" },
 		{ name: "UPDATE", desc: "Upravit" },
 	]);
+	const [isLoading, setIsLoading] = useState(false);
+	const [result, setResult] = useState(null);
 
-	const [tables, setTables] = useState([]);
+	const [isOpenedFk, setIsOpenedFk] = useState(false);
+	const [foreignKey, setForeignKey] = useState(null);
+	const [isOpenedPk, setIsOpenedPk] = useState(false);
+	const [primaryKey, setPrimaryKey] = useState(null);
+
+	const [tables, setTables] = useState([
+		{
+			name: "Table1",
+			attributes: [
+				{ name: "id", type: "pk" },
+				{ name: "engine", type: "string" },
+				{ name: "id_benzin", type: "fk" },
+			],
+		},
+		{
+			name: "Table2",
+			attributes: [
+				{ name: "id", type: "pk" },
+				{ name: "cena", type: "int" },
+				{ name: "id_auto", type: "fk" },
+			],
+		},
+		{
+			name: "Table3",
+			attributes: [
+				{ name: "id", type: "pk" },
+				{ name: "pravda", type: "bool" },
+			],
+		},
+	]);
+
+	const [relations, setRelations] = useState([
+		{ fk: "Table1.id_benzin", pk: "Table2.id" },
+	]);
 	const [activeAction, setActiveAction] = useState("");
 	const [definition, setDefinition] = useState("");
 
@@ -107,8 +142,66 @@ export default function SqlBuilder() {
 		e.target[0].value = "";
 	};
 
-	const handleSend = (e) => {
+	const handleNewRelation = (e) => {
 		e.preventDefault();
+		if (!foreignKey || !primaryKey) {
+			newError("Chybí některý z klíčů");
+			return;
+		} else {
+			const isRelationExist = relations.some(
+				(relation) => relation.fk === foreignKey && relation.pk === primaryKey
+			);
+			if (isRelationExist) {
+				newError("Tato relace již existuje");
+				return;
+			}
+			setRelations((prevRelations) => [
+				...prevRelations,
+				{ fk: foreignKey, pk: primaryKey },
+			]);
+		}
+	};
+
+	const handleSend = async (e) => {
+		e.preventDefault();
+		setIsLoading(true);
+
+		var valid = true;
+
+		if (!tables.length >= 1) {
+			newError("Musí být alespoň jedna tabulka");
+			valid = false;
+		}
+		if (!activeAction) {
+			newError("Musí být uvedena akce");
+			valid = false;
+		}
+		if (definition.length < 10) {
+			newError("Definice musí být delší");
+			valid = false;
+		}
+
+		if (valid) {
+			const sentData = {
+				tables: tables,
+				relations: relations,
+				action: activeAction,
+				definition: definition,
+			};
+
+			try {
+				const { data } = await axios.post("/api/build-sql", sentData);
+				if (data?.result) {
+					setResult(data.result);
+				} else {
+					newError("Něco se pokazilo");
+				}
+			} catch (error) {
+				newError(error.response.data.error);
+			}
+		}
+
+		setIsLoading(false);
 	};
 
 	return (
@@ -118,6 +211,7 @@ export default function SqlBuilder() {
 					<h1>Vytvářeč SQL dotazů</h1>
 					<p></p>
 				</div>
+				<hr />
 				<section>
 					<h2>Tabulky</h2>
 					<div>
@@ -158,6 +252,89 @@ export default function SqlBuilder() {
 						</form>
 					</div>
 				</section>
+				<hr />
+				<section>
+					<h2>Vztahy mezi tabulkami</h2>
+					<div>
+						{relations.map((rel, index) => (
+							<div key={index}>
+								<p>{rel.fk}</p>
+								<span>-&#62;</span>
+								<p>{rel.pk}</p>
+							</div>
+						))}
+					</div>
+					<div>
+						<div>
+							<div>
+								<h3>Cizí klíč</h3>
+								<div>
+									<div onClick={() => setIsOpenedFk(!isOpenedFk)}>
+										{foreignKey ? foreignKey : "Vybrat"}
+									</div>
+									{isOpenedFk && (
+										<div>
+											{tables
+												.flatMap((table) =>
+													table.attributes
+														.filter((attr) => attr.type === "fk")
+														.map((attr) => ({
+															tableName: table.name,
+															attributeName: attr.name,
+														}))
+												)
+												.map((t, index) => (
+													<div
+														key={index}
+														onClick={() => {
+															setForeignKey(
+																`${t.tableName}.${t.attributeName}`
+															);
+															setIsOpenedFk(false);
+														}}
+													>{`${t.tableName}.${t.attributeName}`}</div>
+												))}
+										</div>
+									)}
+								</div>
+							</div>
+							<div>
+								<h3>Primární klíč</h3>
+								<div>
+									<div onClick={() => setIsOpenedPk(!isOpenedPk)}>
+										{primaryKey ? primaryKey : "Vybrat"}
+									</div>
+									{isOpenedPk && (
+										<div>
+											{tables
+												.flatMap((table) =>
+													table.attributes
+														.filter((attr) => attr.type === "pk")
+														.map((attr) => ({
+															tableName: table.name,
+															attributeName: attr.name,
+														}))
+												)
+												.map((t, index) => (
+													<div
+														key={index}
+														onClick={() => {
+															setPrimaryKey(
+																`${t.tableName}.${t.attributeName}`
+															);
+															setIsOpenedPk(false);
+														}}
+													>{`${t.tableName}.${t.attributeName}`}</div>
+												))}
+										</div>
+									)}
+								</div>
+							</div>
+						</div>
+						<button onClick={handleNewRelation}>Přidat vztah</button>
+					</div>
+				</section>
+				<hr />
 				<section>
 					<h2>Akce</h2>
 					<div>
