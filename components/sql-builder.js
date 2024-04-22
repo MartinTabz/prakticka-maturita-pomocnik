@@ -22,35 +22,28 @@ export default function SqlBuilder() {
 
 	const [tables, setTables] = useState([
 		{
-			name: "Table1",
+			name: "Zakaznik",
 			attributes: [
 				{ name: "id", type: "pk" },
-				{ name: "engine", type: "string" },
-				{ name: "id_benzin", type: "fk" },
+				{ name: "jmeno", type: "string" },
+				{ name: "rok_narozeni", type: "int" },
 			],
 		},
 		{
-			name: "Table2",
+			name: "Objednavka",
 			attributes: [
 				{ name: "id", type: "pk" },
 				{ name: "cena", type: "int" },
-				{ name: "id_auto", type: "fk" },
-			],
-		},
-		{
-			name: "Table3",
-			attributes: [
-				{ name: "id", type: "pk" },
-				{ name: "pravda", type: "bool" },
+				{ name: "id_zakaznik", type: "fk" },
 			],
 		},
 	]);
 
 	const [relations, setRelations] = useState([
-		{ fk: "Table1.id_benzin", pk: "Table2.id" },
+		{ fk: "Objednavka.id_zakaznik", pk: "Zakaznik.id" },
 	]);
-	const [activeAction, setActiveAction] = useState("");
-	const [definition, setDefinition] = useState("");
+	const [activeAction, setActiveAction] = useState("SELECT");
+	const [definition, setDefinition] = useState("Z tabulky Objednavka vyber všechny objednávky zákazníka s id = 1");
 
 	const deleteAttribute = (tableIndex, attributeIndex) => {
 		setTables((prevTables) => {

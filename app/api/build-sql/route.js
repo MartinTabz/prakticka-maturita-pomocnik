@@ -46,7 +46,15 @@ export async function POST(req) {
 		return sendResponse(null, "Definice musí být delší", 400);
 	}
 
-	console.log(formData);
+	const { tables, relations, action, definition } = formData;
+
+	const sentence = `Počet tabulek ve schématu: ${
+		tables.length
+	} => ${generateTableSentences(tables)} ${generateRelationSentences(
+		relations
+	)} Používat se bude akce ${action}. Uživatel chce, aby tento dotaz (query) dělal následující: ${definition}`;
+
+	console.log(sentence);
 
 	return sendResponse("Gay", null, 200);
 }
@@ -58,3 +66,26 @@ function sendResponse(result, error, status) {
 	};
 	return new Response(JSON.stringify(send), { status: status });
 }
+
+const generateTableSentences = (tables) => {
+	return tables
+		.map((table, index) => {
+			const tableAttributes = table.attributes
+				.map((attr) => `${attr.name} (${attr.type})`)
+				.join(", ");
+			return `${index + 1}. tabulka se jmenuje ${
+				table.name
+			} a má atributy: ${tableAttributes}.`;
+		})
+		.join(" ");
+};
+
+const generateRelationSentences = (relations) => {
+	return relations
+		.map((relation, index) => {
+			return `Vztah ${index + 1}: ${
+				relation.fk
+			} je cizí klíč, který je spojen s ${relation.pk}.`;
+		})
+		.join(" ");
+};
