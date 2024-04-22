@@ -82,6 +82,11 @@ export default function SqlBuilder({ uses: rawUses }) {
 		e.preventDefault();
 		const tableName = e.target[0].value;
 
+		if (tableName.length < 4) {
+			newError("Tabulka musí mít jméno");
+			return;
+		}
+
 		const isExistingTable = tables.some((table) => table.name === tableName);
 
 		if (isExistingTable) {
@@ -187,7 +192,7 @@ export default function SqlBuilder({ uses: rawUses }) {
 				if (data?.result) {
 					console.log(data.result);
 					setResult(data.result);
-					setUses(uses - 1)
+					setUses(uses - 1);
 				} else {
 					newError("Něco se pokazilo");
 				}
@@ -476,7 +481,9 @@ export default function SqlBuilder({ uses: rawUses }) {
 							<button onClick={handleSend}>Vytvořit</button>
 						)}
 					</div>
-					<span className={style.left}>Zbývá <b>{uses}</b> generování</span>
+					<span className={style.left}>
+						Zbývá <b>{uses}</b> generování
+					</span>
 				</div>
 			</div>
 		</section>
