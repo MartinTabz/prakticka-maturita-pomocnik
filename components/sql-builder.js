@@ -334,7 +334,7 @@ export default function SqlBuilder({ uses: rawUses }) {
 											{tables
 												.flatMap((table) =>
 													table.attributes
-														.filter((attr) => attr.type === "fk")
+														.filter((attr) => attr.type === "fk" || "pk")
 														.map((attr) => ({
 															tableName: table.name,
 															attributeName: attr.name,
