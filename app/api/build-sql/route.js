@@ -7,7 +7,7 @@ import { getServiceSupabase } from "@utils/supabase";
 
 const rateLimit = new Ratelimit({
 	redis: kv,
-	limiter: Ratelimit.slidingWindow(2, "15s"),
+	limiter: Ratelimit.slidingWindow(10, "15s"),
 });
 
 const openai = new OpenAI({
